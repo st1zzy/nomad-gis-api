@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="container">
+        <nav>
+            <ul>
+                <li><strong>Nomad GIS Админ</strong></li>
+            </ul>
+            <ul>
+                <li><button id="theme-toggle" class="secondary outline" title="Сменить тему">◐</button></li>
+                <li><button id="logout-button" class="secondary outline">Выйти</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <nav id="tabs-nav">
+             <ul>
+                <li><a href="#" class="tab-link secondary outline" data-tab="dashboard">Дашборд</a></li>
+                <li><a href="#" class="tab-link secondary outline" data-tab="users">Пользователи</a></li>
+                <li><a href="#" class="tab-link secondary outline" data-tab="points">Точки</a></li>
+                <li><a href="#" class="tab-link secondary outline" data-tab="achievements">Достижения</a></li>
+                <li><a href="#" class="tab-link secondary outline" data-tab="moderation">Модерация</a></li>
+            </ul>
+        </nav>
+
+        <article id="dashboard-tab" class="tab-content">
+            <h2>Сводка</h2>
+            <div class="grid stats-grid">
+                <div class="stat-card"> <h3>Пользователи</h3> <p id="stat-total-users">...</p> <small id="stat-new-users">...</small> </div>
+                <div class="stat-card"> <h3>Точки</h3> <p id="stat-total-points">...</p> <small>Всего</small> </div>
+                <div class="stat-card"> <h3>Сообщения</h3> <p id="stat-total-messages">...</p> <small id="stat-new-messages">...</small> </div>
+                <div class="stat-card"> <h3>Открытий</h3> <p id="stat-total-unlocks">...</p> <small>Всего</small> </div>
+                <div class="stat-card"> <h3>Ачивок</h3> <p id="stat-total-achievements">...</p> <small>Выдано</small> </div>
+            </div>
+        </article>
+
+        <article id="users-tab" class="tab-content" hidden>
+             <header>
+                 <h2>Управление пользователями</h2>
+                 <input type="search" id="user-search" name="search" placeholder="Поиск по Username или Email...">
+             </header>
+            <figure>
+                <div class="table-container" id="users-table-container"> <progress indeterminate></progress> </div>
+                <footer class="pagination-controls" id="users-pagination"></footer>
+            </figure>
+        </article>
+
+        <article id="points-tab" class="tab-content" hidden>
+            <header>
+                 <h2>Управление точками</h2>
+                 <div class="grid">
+                    <input type="search" id="point-search" name="search" placeholder="Поиск по названию...">
+                    <button id="show-create-point-modal" data-target="point-modal">Создать точку</button> </div>
+            </header>
+
+            <div id="points-map-container" style="height: 400px; margin-bottom: var(--spacing);">
+                 <progress indeterminate></progress> </div>
+            <figure>
+                <div class="table-container" id="points-table-container"> <progress indeterminate></progress> </div>
+                <footer class="pagination-controls" id="points-pagination"></footer>
+            </figure>
+        </article>
+
+        <article id="achievements-tab" class="tab-content" hidden>
+             <header>
+                <h2>Управление достижениями</h2>
+                 <div class="grid">
+                    <input type="search" id="achievement-search" name="search" placeholder="Поиск по коду или названию...">
+                    <button id="show-create-achievement-modal">Создать достижение</button>
+                 </div>
+             </header>
+            <figure>
+                <div class="table-container" id="achievements-table-container"> <progress indeterminate></progress> </div>
+                <footer class="pagination-controls" id="achievements-pagination"></footer>
+            </figure>
+        </article>
+
+        <article id="moderation-tab" class="tab-content" hidden>
+            <header>
+                <h2>Модерация сообщений</h2>
+                <div class="grid">
+                    <select id="point-select"> <option value="">-- Выберите точку --</option> </select>
+                    <input type="search" id="message-search" name="search" placeholder="Поиск по автору или тексту...">
+                </div>
+            </header>
+            <figure>
+                <div class="table-container" id="messages-table-container"> <p>Выберите точку...</p> </div>
+                <footer class="pagination-controls" id="messages-pagination"></footer>
+            </figure>
+        </article>
+    </main>
+
+    <dialog id="user-detail-modal">
+        <article> <header> <a href="#close" aria-label="Close" class="close" data-target="user-detail-modal"></a> <h3 id="user-detail-title">Детали пользователя</h3> </header> <div id="user-detail-content"> <progress indeterminate></progress> </div> </article>
+    </dialog>
+
+    <dialog id="point-modal">
+        <article>
+            <header> <a href="#close" aria-label="Close" class="close" data-target="point-modal"></a> <h3 id="point-modal-title">Точка</h3> </header>
+            <form id="point-form">
+                <input type="hidden" id="point-id">
+                <label for="point-name">Название <input type="text" id="point-name" required> </label>
+
+                <div id="point-modal-map" style="height: 250px; margin-bottom: var(--spacing); border-radius: var(--border-radius); border: 1px solid var(--muted-border-color);"></div>
+                 <small>Перетащите маркер для выбора координат.</small>
+                 <div class="grid">
+                    <label for="point-lat">Latitude <input type="number" step="any" id="point-lat" required> </label>
+                    <label for="point-lon">Longitude <input type="number" step="any" id="point-lon" required> </label>
+                </div>
+                <label for="point-radius">Радиус (метры) <input type="number" id="point-radius" required> </label>
+                <label for="point-desc">Описание <textarea id="point-desc" rows="3"></textarea> </label>
+                <footer> <button type="submit">Сохранить</button> </footer>
+            </form>
+        </article>
+    </dialog>
+
+    <dialog id="achievement-modal">
+         <article> <header> <a href="#close" aria-label="Close" class="close" data-target="achievement-modal"></a> <h3 id="achievement-modal-title">Достижение</h3> </header>
+            <form id="achievement-form">
+                 <input type="hidden" id="achievement-id">
+                 <label for="achievement-code">Код <input type="text" id="achievement-code" required> </label>
+                 <label for="achievement-title">Название <input type="text" id="achievement-title" required> </label>
+                 <label for="achievement-desc">Описание <textarea id="achievement-desc" rows="3"></textarea> </label>
+                 <label for="achievement-reward">Очки награды <input type="number" id="achievement-reward" required> </label>
+                 <label for="achievement-badge">Изображение <input type="file" id="achievement-badge" accept="image/png, image/jpeg, image/webp"> </label>
+                 <img id="achievement-badge-preview" src="" alt="Предпросмотр" class="badge-preview"/>
+                 <footer> <button type="submit">Сохранить</button> </footer>
+            </form>
+         </article>
+    </dialog>
+
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>

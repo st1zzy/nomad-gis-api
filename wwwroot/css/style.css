@@ -1,0 +1,196 @@
+/* Дополнительные стили поверх Pico.css */
+html {
+  font-size: 15px; /* Вы можете попробовать 14px, если хотите еще меньше */
+}
+/* Убираем лишние отступы у таблиц внутри figure */
+main > article > figure { margin: 0; }
+figure > .table-container { margin-bottom: 0; }
+
+/* Кнопки действий в таблицах */
+td > button, td > a { margin-bottom: 0; margin-right: 0.5rem; }
+
+/* Предпросмотр значка в модалке */
+.badge-preview {
+    max-width: 100px;
+    max-height: 100px;
+    margin-top: 10px;
+    display: none;
+    border-radius: var(--border-radius);
+    object-fit: cover;
+}
+.badge-preview[src] { display: block; }
+
+/* Иконка значка в таблице */
+.table-badge-icon {
+    max-width: 40px;
+    max-height: 40px;
+    border-radius: var(--border-radius);
+    object-fit: cover;
+    vertical-align: middle;
+}
+
+/* Карточки статистики */
+.stats-grid { gap: var(--spacing); } /* Используем переменную Pico */
+.stat-card {
+    padding: var(--block-spacing-vertical) var(--block-spacing-horizontal);
+    border-radius: var(--border-radius);
+    background-color: var(--card-background-color);
+    border: var(--card-border-width) solid var(--card-border-color);
+    box-shadow: var(--card-box-shadow);
+}
+.stat-card h3 { margin: 0 0 0.5rem 0; font-size: 1rem; color: var(--muted-color); }
+.stat-card p { margin: 0 0 0.25rem 0; font-size: 2.5rem; font-weight: 600; color: var(--h1-color); }
+.stat-card small { font-size: 0.9rem; color: var(--primary); }
+
+/* Выравнивание пагинации */
+.pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--form-element-spacing-vertical) 0;
+}
+.pagination-controls button { margin-bottom: 0; }
+.page-info { color: var(--muted-color); }
+
+/* Модальное окно деталей пользователя */
+.modal-lg > article { max-width: 800px; } /* Увеличиваем ширину */
+.user-detail-header { display: flex; align-items: center; gap: var(--spacing); margin-bottom: var(--spacing); padding-bottom: var(--spacing); border-bottom: var(--border-width) solid var(--muted-border-color); }
+.user-detail-avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--muted-border-color); }
+.user-detail-info h4 { margin: 0 0 0.5rem 0; font-size: 1.5rem; }
+.user-detail-info p { margin: 0.25rem 0; color: var(--muted-color); }
+.user-detail-stats { display: flex; gap: var(--spacing); margin-top: var(--spacing); }
+.user-detail-stat { text-align: center; }
+.user-detail-stat span { font-size: 1.2rem; font-weight: 600; color: var(--primary); display: block; }
+.user-detail-stat small { font-size: 0.8rem; color: var(--muted-color); text-transform: uppercase; }
+.detail-grid { grid-template-columns: 1fr 1fr; gap: var(--spacing); }
+.detail-list-container { max-height: 300px; overflow-y: auto; border: var(--border-width) solid var(--muted-border-color); border-radius: var(--border-radius); background-color: var(--background-color); }
+.detail-list-container h5 { margin: 0; padding: 0.75rem 1rem; background-color: var(--muted-border-color); border-bottom: var(--border-width) solid var(--muted-border-color); position: sticky; top: 0; font-size: 1rem; }
+.detail-list { list-style-type: none; padding: 0; margin: 0; }
+.detail-list li { padding: 0.75rem 1rem; border-bottom: var(--border-width) solid var(--muted-border-color); display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;}
+.detail-list li:last-child { border-bottom: none; }
+.detail-list .date { font-size: 0.8rem; color: var(--muted-color); }
+
+/* Сообщения в модерации */
+td.message-content { white-space: pre-wrap; word-break: break-word; max-width: 400px; vertical-align: top; font-size: 0.9rem; }
+
+/* Активная вкладка */
+#tabs-nav a.active {
+    background-color: var(--primary);
+    color: var(--primary-inverse);
+    font-weight: bold;
+}
+#tabs-nav a { transition: background-color 0.2s, color 0.2s; } /* Плавный переход */
+
+/* Поиск */
+article > header input[type="search"] { margin-bottom: 0;}
+
+
+
+/* --- Стили для мобильных устройств (ширина <= 768px) --- */
+@media (max-width: 768px) {
+
+  /* Уменьшаем отступы для основного контента */
+  main.container {
+    padding: var(--spacing);
+  }
+
+  /* Шапка */
+  header nav ul:first-of-type {
+    display: none; /* Скрываем "Nomad GIS Админ" в шапке */
+  }
+   header nav ul {
+    padding: 0; /* Убираем лишний отступ */
+  }
+
+  /* Навигация (табы) - делаем прокручиваемой */
+  #tabs-nav {
+      overflow-x: auto; /* Горизонтальная прокрутка */
+      white-space: nowrap; /* Запрещаем перенос строк */
+      margin-bottom: var(--spacing);
+  }
+  #tabs-nav ul {
+      display: inline-flex; /* Делаем элементы в одну строку */
+      padding-left: 0;
+      margin-bottom: 0;
+  }
+   #tabs-nav li {
+       display: inline-block; /* Для корректной работы nowrap */
+   }
+   #tabs-nav a {
+       padding: 0.75rem 1rem; /* Чуть меньше отступы */
+   }
+
+  /* Таблицы - делаем прокручиваемыми */
+  /* Pico уже делает таблицы прокручиваемыми по умолчанию,
+     но можно добавить рамку для наглядности */
+  
+
+  /* Карточки статистики - меньше колонок */
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Уменьшаем минимальную ширину */
+    gap: var(--spacing);
+  }
+  .stat-card p {
+      font-size: 2rem; /* Чуть меньше цифры */
+  }
+
+  /* Модальные окна */
+  dialog > article {
+    width: 90%; /* Шире на мобильных */
+  }
+  .modal-lg > article {
+      max-width: 95%; /* Делаем широкую модалку почти на весь экран */
+  }
+
+  /* Детали пользователя - колонки в столбик */
+  .user-detail-header {
+      flex-direction: column; /* Аватар над текстом */
+      text-align: center;
+      gap: var(--spacing);
+  }
+   .user-detail-stats {
+       justify-content: center; /* Центрируем статы */
+   }
+  .detail-grid {
+      grid-template-columns: 1fr; /* Одна колонка */
+  }
+
+  /* Поля поиска и кнопки */
+  article > header .grid {
+      grid-template-columns: 1fr; /* Поиск и кнопка друг под другом */
+      gap: var(--spacing);
+  }
+   article > header input[type="search"] {
+       margin-bottom: 0;
+   }
+
+  /* Пагинация - кнопки меньше, текст по центру */
+  .pagination-controls {
+      flex-direction: column;
+      gap: 0.5rem;
+  }
+   .pagination-controls button {
+       padding: 0.5rem 0.75rem;
+       font-size: 0.8rem;
+   }
+   .page-info {
+       order: -1; /* Ставим текст над кнопками */
+   }
+}
+/* ^-- КОНЕЦ НОВЫХ СТИЛЕЙ --^ */
+
+/* Стили для Leaflet карты */
+#points-map-container, #point-modal-map {
+    background-color: var(--muted-border-color); /* Фон во время загрузки тайлов */
+    z-index: 1; /* Чтобы была под модальными окнами */
+}
+
+/* Стиль для выделенного маркера (можно настроить) */
+.leaflet-marker-icon.highlighted-marker {
+  filter: hue-rotate(120deg) saturate(2); /* Делаем маркер зеленым */
+}
+
+table tbody tr.highlighted-row {
+    background-color: var(--primary-focus); /* Цвет фона при подсветке */
+    outline: 2px solid var(--primary); /* Рамка */
+}
